@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.audit.mixins import AuditMixin
+from apps.bill.services import generate_penalty_bill
 from apps.common.constants import LeaseStatus, UserRole
 from apps.common.permissions import IsLandlord
 from apps.lease.models import Lease
@@ -17,7 +18,7 @@ class LeaseViewSet(AuditMixin, viewsets.ModelViewSet):
     audit_entity_type = "lease"
 
     def get_permissions(self):
-        if self.action in ["create", "renew"]:
+        if self.action in ["create", "renew", "terminate"]:
             return [permissions.IsAuthenticated(), IsLandlord()]
         return [permissions.IsAuthenticated()]
 
@@ -73,6 +74,24 @@ class LeaseViewSet(AuditMixin, viewsets.ModelViewSet):
         lease.status = LeaseStatus.TERMINATED
         lease.terminationReason = request.data.get("terminationReason", "提前终止")
         lease.save()
-        self.record_audit(request, "lease.terminate", lease, {}, {"reason": lease.terminationReason})
+        penalty_amount = request.data.get("penaltyAmount")
+        penalty_bill = None
+        if penalty_amount and float(penalty_amount) > 0:
+            penalty_bill = generate_penalty_bill(
+                lease,
+                penalty_amount,
+                request.data.get("terminationReason", "提前退租"),
+            )
+        self.record_audit(
+            request,
+            "lease.terminate",
+            lease,
+            {},
+            {
+                "reason": lease.terminationReason,
+                "penaltyAmount": str(penalty_amount) if penalty_amount else None,
+                "penaltyBillId": str(penalty_bill.id) if penalty_bill else None,
+            },
+        )
         return Response(LeaseSerializer(lease).data)
 

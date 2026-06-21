@@ -20,3 +20,14 @@ def generate_rent_bills(lease):
         defaults={"title": f"{lease.property.title} 房租账单", "amount": lease.monthlyRent * months},
     )
 
+
+def generate_penalty_bill(lease, amount, remark=""):
+    return Bill.objects.create(
+        lease=lease,
+        type=BillType.PENALTY,
+        title=f"{lease.property.title} 提前退租违约金",
+        amount=amount,
+        dueDate=timezone.localdate(),
+        remark=remark,
+    )
+

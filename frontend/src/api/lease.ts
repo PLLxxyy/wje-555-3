@@ -8,6 +8,7 @@ export const leaseApi = {
   create: (data: Record<string, unknown>) => request.post<unknown, Lease>('/leases/', data),
   sign: (id: string) => request.post<unknown, Lease>(`/leases/${id}/sign/`),
   renew: (id: string, data: Record<string, unknown>) => request.post<unknown, Lease>(`/leases/${id}/renew/`, data),
-  terminate: (id: string, terminationReason: string) => request.post<unknown, Lease>(`/leases/${id}/terminate/`, { terminationReason }),
+  terminate: (id: string, data: { terminationReason: string; penaltyAmount?: number | string }) =>
+    request.post<unknown, Lease>(`/leases/${id}/terminate/`, data),
 }
 

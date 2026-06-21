@@ -12,6 +12,13 @@ export const useLeaseStore = defineStore('lease', {
     async fetchOne(id: string) {
       this.current = await leaseApi.detail(id)
     },
+    async terminate(id: string, data: { terminationReason: string; penaltyAmount?: number | string }) {
+      const result = await leaseApi.terminate(id, data)
+      if (this.current?.id === id) {
+        this.current = result
+      }
+      return result
+    },
   },
 })
 

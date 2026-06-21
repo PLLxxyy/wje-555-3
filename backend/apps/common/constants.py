@@ -26,6 +26,7 @@ class BillType(models.TextChoices):
     UTILITY = "UTILITY", "水电"
     MAINTENANCE = "MAINTENANCE", "维修"
     PROPERTY = "PROPERTY", "物业"
+    PENALTY = "PENALTY", "违约金"
 
 
 class BillStatus(models.TextChoices):

@@ -23,6 +23,7 @@ export enum BillType {
   UTILITY = 'UTILITY',
   MAINTENANCE = 'MAINTENANCE',
   PROPERTY = 'PROPERTY',
+  PENALTY = 'PENALTY',
 }
 
 export enum BillStatus {
@@ -77,6 +78,7 @@ export const enumLabels: Record<string, string> = Object.fromEntries([
   [BillType.UTILITY, '水电'],
   [BillType.MAINTENANCE, '维修'],
   [BillType.PROPERTY, '物业'],
+  [BillType.PENALTY, '违约金'],
   [BillStatus.PENDING, '待付'],
   [BillStatus.PAID, '已付'],
   [BillStatus.OVERDUE, '逾期'],

@@ -34,7 +34,7 @@ onMounted(() => store.fetch())
 async function sign(row: Lease) { await leaseApi.sign(row.id); await store.fetch() }
 async function terminate(row: Lease) {
   const reason = await ElMessageBox.prompt('填写终止原因', '终止租约')
-  await leaseApi.terminate(row.id, reason.value)
+  await leaseApi.terminate(row.id, { terminationReason: reason.value })
   await store.fetch()
 }
 </script>
