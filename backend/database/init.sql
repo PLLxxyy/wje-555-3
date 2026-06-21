@@ -1,0 +1,5 @@
+CREATE DATABASE IF NOT EXISTS renthub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS 'renthub'@'%' IDENTIFIED BY 'renthub_password';
+GRANT ALL PRIVILEGES ON renthub.* TO 'renthub'@'%';
+FLUSH PRIVILEGES;
+

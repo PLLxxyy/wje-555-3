@@ -1,0 +1,13 @@
+.DS_Store
+.env.local
+node_modules/
+dist/
+__pycache__/
+*.py[cod]
+.venv/
+db.sqlite3
+media/
+staticfiles/
+.pytest_cache/
+.playwright-cli/
+output/playwright/

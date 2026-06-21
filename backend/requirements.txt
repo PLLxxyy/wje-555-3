@@ -1,0 +1,6 @@
+Django>=5.2,<5.3
+djangorestframework>=3.16,<3.17
+django-cors-headers>=4.7,<4.8
+PyJWT>=2.10,<2.11
+PyMySQL>=1.1,<1.2
+

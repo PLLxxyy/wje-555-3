@@ -1,0 +1,56 @@
+@use './variables' as *;
+
+* { box-sizing: border-box; }
+body { margin: 0; color: $ink; background: $paper; font-family: "Avenir Next", "PingFang SC", sans-serif; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin-top: 0; }
+
+.shell { min-height: 100vh; display: grid; grid-template-columns: 220px 1fr; }
+.sidebar { background: #153d39; color: #edf7f2; padding: 28px 18px; display: flex; flex-direction: column; gap: 10px; }
+.sidebar a { padding: 12px 14px; border-radius: 8px; }
+.sidebar a.router-link-active, .sidebar a:hover { background: rgba(255,255,255,.12); }
+.main { min-width: 0; display: flex; flex-direction: column; }
+.app-header { height: 68px; display: flex; justify-content: space-between; align-items: center; padding: 0 28px; background: #fbfaf6; border-bottom: 1px solid $line; }
+.app-header strong { font-size: 22px; margin-right: 12px; }
+.app-header span, .app-footer, .page-heading p { color: $muted; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.page-surface { flex: 1; padding: 28px; }
+.app-footer { padding: 18px 28px; border-top: 1px solid $line; }
+.page-heading { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 16px; }
+.page-heading h1 { font-size: 30px; margin-bottom: 6px; }
+.metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 26px; }
+.metric-grid section { background: #fbfaf6; border: 1px solid $line; padding: 18px; border-radius: 8px; }
+.metric-grid span { display: block; color: $muted; margin-bottom: 10px; }
+.metric-grid strong { font-size: 24px; }
+.content-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.cards-grid.spacious { margin-top: 22px; }
+.property-card { cursor: pointer; background: #fbfaf6; border: 1px solid $line; border-radius: 8px; overflow: hidden; transition: transform .18s ease, border-color .18s ease; }
+.property-card:hover { transform: translateY(-2px); border-color: $brand; }
+.property-card img { width: 100%; height: 170px; object-fit: cover; display: block; }
+.property-card__body { padding: 16px; }
+.property-card__top, .action-row, .tag-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.property-card h3 { margin: 12px 0 8px; }
+.property-card p { color: $muted; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; background: #fbfaf6; border: 1px solid $line; border-radius: 8px; margin-bottom: 16px; }
+.map-panel { min-height: 360px; background: linear-gradient(135deg, #dbe8df, #eff1e6); border: 1px solid $line; border-radius: 8px; margin-top: 20px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.detail-hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); gap: 28px; align-items: start; }
+.detail-hero img { width: 100%; height: 100%; object-fit: cover; }
+.detail-hero strong { display: block; color: $brand; font-size: 28px; margin: 16px 0; }
+.plain-section { margin-top: 28px; background: #fbfaf6; border: 1px solid $line; border-radius: 8px; padding: 22px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 18px; max-width: 980px; }
+.span-2 { grid-column: 1 / -1; }
+.image-uploader { display: flex; gap: 10px; flex-wrap: wrap; width: 100%; }
+.image-uploader .el-input { flex: 1 1 320px; }
+.image-strip { flex-basis: 100%; display: flex; gap: 8px; flex-wrap: wrap; }
+.auth-page { min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at top left, #d5e9df, transparent 34%), $paper; padding: 20px; }
+.auth-panel { width: min(420px, 100%); }
+.auth-panel h1 { font-size: 32px; }
+.full { width: 100%; margin-bottom: 14px; }
+
+@media (max-width: 860px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { flex-direction: row; overflow-x: auto; }
+  .metric-grid, .content-grid, .detail-hero, .form-grid { grid-template-columns: 1fr; }
+}
+

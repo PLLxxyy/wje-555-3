@@ -1,0 +1,66 @@
+name: wjerenthub
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: ${COMPOSE_PROJECT_NAME:-wjerenthub}_db
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-renthub}
+      MYSQL_USER: ${MYSQL_USER:-renthub}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-renthub_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/database/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${MYSQL_USER:-renthub}", "-p${MYSQL_PASSWORD:-renthub_password}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - renthub
+
+  backend:
+    build:
+      context: ./backend
+    container_name: ${COMPOSE_PROJECT_NAME:-wjerenthub}_backend
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_ENGINE: mysql
+      DJANGO_PORT: 38305
+    ports:
+      - "38305:38305"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - renthub
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+    container_name: ${COMPOSE_PROJECT_NAME:-wjerenthub}_frontend
+    ports:
+      - "38205:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - renthub
+
+volumes:
+  mysql_data:
+
+networks:
+  renthub:
+    driver: bridge
