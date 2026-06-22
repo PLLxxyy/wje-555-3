@@ -74,25 +74,23 @@ class LeaseViewSet(AuditMixin, viewsets.ModelViewSet):
         lease = self.get_object()
         if lease.status == LeaseStatus.TERMINATED:
             raise ValidationError("该租约已终止，不可重复操作")
+        existing_penalty = lease.bills.filter(type="PENALTY").exists()
+        if existing_penalty:
+            raise ValidationError("该租约已存在违约金账单，不可重复生成")
         penalty_amount = request.data.get("penaltyAmount")
         if penalty_amount is None:
             raise ValidationError("请传入违约金金额")
         penalty_amount = float(penalty_amount)
-        if penalty_amount < 0:
-            raise ValidationError("违约金金额不能为负数")
-        existing_penalty = lease.bills.filter(type="PENALTY").exists()
-        if existing_penalty:
-            raise ValidationError("该租约已存在违约金账单，不可重复生成")
+        if penalty_amount <= 0:
+            raise ValidationError("违约金金额必须大于 0")
         lease.status = LeaseStatus.TERMINATED
         lease.terminationReason = request.data.get("terminationReason", "提前终止")
         lease.save()
-        penalty_bill = None
-        if penalty_amount > 0:
-            penalty_bill = generate_penalty_bill(
-                lease,
-                penalty_amount,
-                request.data.get("terminationReason", "提前退租"),
-            )
+        penalty_bill = generate_penalty_bill(
+            lease,
+            penalty_amount,
+            request.data.get("terminationReason", "提前退租"),
+        )
         self.record_audit(
             request,
             "lease.terminate",
@@ -101,7 +99,7 @@ class LeaseViewSet(AuditMixin, viewsets.ModelViewSet):
             {
                 "reason": lease.terminationReason,
                 "penaltyAmount": str(penalty_amount),
-                "penaltyBillId": str(penalty_bill.id) if penalty_bill else None,
+                "penaltyBillId": str(penalty_bill.id),
             },
         )
         return Response(LeaseSerializer(lease).data)

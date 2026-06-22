@@ -34,7 +34,7 @@
           <el-input v-model="terminateForm.terminationReason" type="textarea" :rows="3" placeholder="请输入终止原因" />
         </el-form-item>
         <el-form-item label="违约金" prop="penaltyAmount">
-          <el-input-number v-model="terminateForm.penaltyAmount" :min="0" :precision="2" style="width: 100%" />
+          <el-input-number v-model="terminateForm.penaltyAmount" :min="0.01" :precision="2" style="width: 100%" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -64,18 +64,18 @@ const showTerminateDialog = ref(false)
 const terminateFormRef = ref<FormInstance>()
 const terminateForm = ref({
   terminationReason: '',
-  penaltyAmount: 0,
+  penaltyAmount: 0.01,
 })
 
 const terminateRules: FormRules = {
   terminationReason: [{ required: true, message: '请输入终止原因', trigger: 'blur' }],
-  penaltyAmount: [{ type: 'number', min: 0, message: '违约金不能为负数', trigger: 'blur' }],
+  penaltyAmount: [{ type: 'number', min: 0.01, message: '违约金必须大于 0', trigger: 'blur' }],
 }
 
 function resetTerminateForm() {
   terminateForm.value = {
     terminationReason: '',
-    penaltyAmount: 0,
+    penaltyAmount: 0.01,
   }
   terminateFormRef.value?.resetFields()
 }
